@@ -5,7 +5,6 @@ from urllib.request import urlopen
 from PIL import ImageTk, Image, ImageDraw, ImageFont
 from io import BytesIO
 from os import environ
-from typing import Union
 from math import floor
 
 
@@ -42,26 +41,30 @@ def draw_info_snapshot(img: Image, channel: int) -> Image:
     return img
 
 
-def get_snapshot(channel: int) -> Union[ImageTk.PhotoImage, bool]:
+def get_snapshot(channel: int) -> ImageTk.PhotoImage:
     """
         Get a snapshot of a channel.
     """
 
+    # Set the snapshot path
+    data = None
     snapshot_path = f"http://{environ['NVR_IP']}/cgi-bin/snapshot.cgi?chn={channel}&u={environ['NVR_USERNAME']}&p={environ['NVR_PASSWORD']}"
+
     try:
         # Open the snapshot path, get the image data
         url = urlopen(snapshot_path)
         data = BytesIO(url.read())
         url.close()
-
-        # Assign into PIL, resize, and add text
-        img = Image.open(data)
-        img = resize_snapshot(img)
-        img = draw_info_snapshot(img, channel)
-        return ImageTk.PhotoImage(img)
     except Exception as e:
+        # Network issue... happens sometimes when grabbing a snapshot
+        data = open("./no-image.jpg", "rb")
         print(f"Error getting snapshot for channel {channel}... {str(e)}")
-        return False
+
+    # Assign into PIL, resize, and add text
+    img = Image.open(data)
+    img = resize_snapshot(img)
+    img = draw_info_snapshot(img, channel)
+    return ImageTk.PhotoImage(img)
 
 
 def update_snapshots() -> None:
