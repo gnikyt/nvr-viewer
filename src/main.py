@@ -4,7 +4,7 @@ import time
 from urllib.request import urlopen
 from PIL import ImageTk, Image, ImageDraw, ImageFont
 from io import BytesIO
-from os import environ
+from os import environ, path
 from math import floor
 
 
@@ -57,7 +57,7 @@ def get_snapshot(channel: int) -> ImageTk.PhotoImage:
         url.close()
     except Exception as e:
         # Network issue... happens sometimes when grabbing a snapshot
-        data = open("./no-image.jpg", "rb")
+        data = open(path.join(path.dirname(__file__), "no-image.jpg"), "rb")
         print(f"Error getting snapshot for channel {channel}... {str(e)}")
 
     # Assign into PIL, resize, and add text
