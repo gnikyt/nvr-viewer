@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import tkinter as tk
+import tkinter.simpledialog
 import time
 from urllib.request import urlopen
 from PIL import ImageTk, Image, ImageDraw, ImageFont
@@ -93,9 +94,12 @@ window = tk.Tk()
 window.configure(background="black")
 window.title("NVR Viewer")
 
+# Ask for the number of channels to display
+channel_count = tk.simpledialog.askinteger("How many channels to display?", window)
+
 # Create the labels for each channel 
 clabels = []
-for channel in range(0, int(environ['NVR_CHANNELS'])):
+for channel in range(0, channel_count):
     snapshot = get_snapshot(channel)
     label = tk.Label(window, image=snapshot)
     label.pack()
