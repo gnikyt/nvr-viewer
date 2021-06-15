@@ -33,7 +33,7 @@ def draw_info_snapshot(img: Image, channel: int) -> Image:
     overlay_text = f"Channel {channel} / {timestamp}"
 
     # Set the font for the overlay text
-    fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 10)
+    fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 11)
 
     # Draw the overlay text and rectangle
     draw = ImageDraw.Draw(img, "RGBA")
@@ -73,11 +73,11 @@ def update_snapshots() -> None:
         Update channel snapshots on screen.
     """
 
-    for channel in range(len(clabels)):
+    for index, channel in enumerate(channels):
         img = get_snapshot(channel)
         if img is not False:
-            clabels[channel].configure(image=img)
-            clabels[channel].photo_ref = img
+            clabels[index].configure(image=img)
+            clabels[index].photo_ref = img
 
 
 def snapshot_ticker() -> None:
@@ -95,11 +95,12 @@ window.configure(background="black")
 window.title("NVR Viewer")
 
 # Ask for the number of channels to display
-channel_count = tk.simpledialog.askinteger("How many channels to display?", window)
+channels = tk.simpledialog.askstring("Which channels to display? (ex. \"0,1,4\")", window)
+channels = [int(channel) for channel in channels.split(",")]
 
 # Create the labels for each channel 
 clabels = []
-for channel in range(0, channel_count):
+for channel in channels:
     snapshot = get_snapshot(channel)
     label = tk.Label(window, image=snapshot)
     label.pack()
