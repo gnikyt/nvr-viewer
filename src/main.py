@@ -8,6 +8,7 @@ from PIL import ImageTk, Image, ImageDraw, ImageFont
 from io import BytesIO
 from os import environ, path
 from math import floor
+from subprocess import run
 
 
 def resize_snapshot(img: Image) -> Image:
@@ -94,10 +95,13 @@ def snapshot_ticker() -> None:
     window.after(2000, snapshot_ticker)
 
 
+
 # Create the window
+title = "NVR Viewer"
 window = tk.Tk()
+window.title(title)
 window.configure(background="black")
-window.title("NVR Viewer")
+window.geometry("600x300")
 
 # Ask for the number of channels to display
 channels = tk.simpledialog.askstring("Which channels to display? (ex. \"0,1,4\")", window)
@@ -117,4 +121,7 @@ for channel in channels:
 
 # Init loops
 snapshot_ticker()
+
+# Final window config
+window.lift()
 window.mainloop()
