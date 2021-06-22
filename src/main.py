@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import tkinter as tk
+from tkinter.constants import BOTTOM, LEFT
 import tkinter.simpledialog
 import time
 from urllib.request import urlopen
@@ -14,8 +15,13 @@ def resize_snapshot(img: Image) -> Image:
         Resizes a snapshot to the window size while keeping aspect ratio.
     """
 
+    # Get image size and window width
     width, height = img.size
-    new_width = floor(window.winfo_width())
+    win_width = floor(window.winfo_width())
+
+    # Horizontal layout, calculate number of cameras to fit inside window width
+    new_width = win_width / len(channels) if layout == tk.LEFT else win_width
+    new_width = floor(new_width)
     if new_width > 1:
         # new_width will be 1 or less if window is not truely open yet
         new_height = floor(new_width * (height / width))
@@ -33,7 +39,7 @@ def draw_info_snapshot(img: Image, channel: int) -> Image:
     overlay_text = f"Channel {channel} / {timestamp}"
 
     # Set the font for the overlay text
-    fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 11)
+    fnt = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 10)
 
     # Draw the overlay text and rectangle
     draw = ImageDraw.Draw(img, "RGBA")
@@ -59,7 +65,6 @@ def get_snapshot(channel: int) -> ImageTk.PhotoImage:
     except Exception as e:
         # Network issue... happens sometimes when grabbing a snapshot
         data = open(path.join(path.dirname(__file__), "no-image.jpg"), "rb")
-        print(f"Error getting snapshot for channel {channel}... {str(e)}")
 
     # Assign into PIL, resize, and add text
     img = Image.open(data)
@@ -98,12 +103,16 @@ window.title("NVR Viewer")
 channels = tk.simpledialog.askstring("Which channels to display? (ex. \"0,1,4\")", window)
 channels = [int(channel) for channel in channels.split(",")]
 
+# Ask for layout
+layout = tk.simpledialog.askstring("Vertical or horizontal? (ex. \"H\" or \"V\")", window)
+layout = tk.LEFT if layout.upper() == "H" else tk.BOTTOM
+
 # Create the labels for each channel 
 clabels = []
 for channel in channels:
     snapshot = get_snapshot(channel)
     label = tk.Label(window, image=snapshot)
-    label.pack()
+    label.pack(side=layout)
     clabels.append(label)
 
 # Init loops
