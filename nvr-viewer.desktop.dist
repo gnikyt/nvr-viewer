@@ -6,4 +6,4 @@ Exec=sh -c "NVR_IP=192.168.1.1 NVR_USERNAME=admin NVR_PASSWORD=hunter1 /home/tyl
 Name=NVR Viewer
 Icon=/usr/share/icons/gnome/256x256/devices/camera-photo.png
 Categories=Internet;
-
+StartupWMClass=NVRViewer

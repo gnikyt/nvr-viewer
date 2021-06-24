@@ -98,10 +98,10 @@ def snapshot_ticker() -> None:
 
 # Create the window
 title = "NVR Viewer"
-window = tk.Tk()
+window = tk.Tk(className="NVRViewer")
 window.title(title)
 window.configure(background="black")
-window.geometry("600x300")
+window.geometry("344x586") # Initial size to fit three cameras vertically
 
 # Ask for the number of channels to display
 channels = tk.simpledialog.askstring("Which channels to display? (ex. \"0,1,4\")", window)
