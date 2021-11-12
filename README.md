@@ -12,8 +12,7 @@ Each snapshot will update every two seconds.
 
 Requires Python 3.6 or higher, PIL, and TKinter
 
-Once installed, copy rename `nvr-viewer.desktop.dist` to `nvr-viewer.desktop`.
-
-Fill in the environment variables for username, password, IP, and channels.
-
-Move or symlink the desktop file `~/.local/share/applications/`.
+1. `source .env/bin/activate && pyton3 -m pip install -r requirements.txt`
+2. Copy/rename `nvr-viewer.desktop.dist` to `nvr-viewer.desktop`.
+3. Fill in the environment variables for username, password, IP, and channels in `nvr-viewer.desktop`.
+4. Move or symlink the desktop file `~/.local/share/applications/`.

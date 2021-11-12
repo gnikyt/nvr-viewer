@@ -2,7 +2,7 @@
 Version=1.0
 Type=Application
 Terminal=false
-Exec=sh -c "NVR_IP=192.168.1.1 NVR_USERNAME=admin NVR_PASSWORD=hunter1 /home/tyler/Development/Github/nvr-viewer/src/main.py"
+Exec=sh -c "NVR_IP=192.168.1.1 NVR_USERNAME=admin NVR_PASSWORD=hunter1 NVR_CHANNELS=0,1,2,3 NVR_CHANNELS_PER_ROW=2 /home/tyler/Development/Github/nvr-viewer/src/main.py"
 Name=NVR Viewer
 Icon=/usr/share/icons/gnome/256x256/devices/camera-photo.png
 Categories=Internet;

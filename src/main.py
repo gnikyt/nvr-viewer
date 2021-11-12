@@ -21,7 +21,7 @@ def resize_snapshot(img: Image) -> Image:
     win_width = floor(window.winfo_width())
 
     # Horizontal layout, calculate number of cameras to fit inside window width
-    new_width = win_width / len(channels) if layout == tk.LEFT else win_width
+    new_width = win_width / channels_per_row
     new_width = floor(new_width)
     if new_width > 1:
         # new_width will be 1 or less if window is not truely open yet
@@ -95,33 +95,27 @@ def snapshot_ticker() -> None:
     window.after(2000, snapshot_ticker)
 
 
-
 # Create the window
 title = "NVR Viewer"
 window = tk.Tk(className="NVRViewer")
 window.title(title)
 window.configure(background="black")
-window.geometry("344x586") # Initial size to fit three cameras vertically
+window.geometry("800x800")
 
-# Ask for the number of channels to display
-channels = tk.simpledialog.askstring("Which channels to display? (ex. \"0,1,4\")", window)
-channels = [int(channel) for channel in channels.split(",")]
+# Get the channel data and split channels into chunks of col/rows
+channels = [int(channel) for channel in environ["NVR_CHANNELS"].split(",")]
+channels_per_row = int(environ["NVR_CHANNELS_PER_ROW"])
+channel_grid = (channels[i::channels_per_row] for i in range(channels_per_row))
 
-# Ask for layout
-layout = tk.simpledialog.askstring("Vertical or horizontal? (ex. \"H\" or \"V\")", window)
-layout = tk.LEFT if layout.upper() == "H" else tk.BOTTOM
-
-# Create the labels for each channel 
+# Create the channels in the view
 clabels = []
-for channel in channels:
-    snapshot = get_snapshot(channel)
-    label = tk.Label(window, image=snapshot)
-    label.pack(side=layout)
-    clabels.append(label)
+for row, data in enumerate(channel_grid):
+    for column, channel in enumerate(data):
+        snapshot = get_snapshot(channel)
+        label = tk.Label(window, image=snapshot)
+        label.grid(row=row, column=column)
+        clabels.append(label)
 
 # Init loops
 snapshot_ticker()
-
-# Final window config
-window.lift()
 window.mainloop()
